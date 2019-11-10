@@ -1,4 +1,4 @@
-service: bdd-lock-table
+service: bdd-lock-table-${opt:stackName, 'dev'}
 
 provider:
   name: aws
@@ -12,3 +12,30 @@ functions:
       - http:
           method: POST
           path: create
+
+resources:
+    Resources:
+      bddLockTable: 
+        Type: AWS::DynamoDB::Table
+        Properties:
+          TableName: bddLockTable-${opt:stackName, 'dev'}
+          AttributeDefinitions:
+            - AttributeName: stackName
+              AttributeType: S
+            - AttributeName: repoName
+              AttributeType: S
+            - AttributeName: isAvailable
+              AttributeType: S
+          KeySchema:
+            - AttributeName: stackName
+              KeyType: HASH
+          GlobalSecondaryIndexes:
+            - IndexName: "availableByRepoIndex"
+              KeySchema:
+                - AttributeName: "repoName"
+                  KeyType: "HASH"
+                - AttributeName: "isAvailable"
+                  KeyType: "RANGE"
+              Projection:
+                ProjectionType: KEYS_ONLY
+          BillingMode: PAY_PER_REQUEST
