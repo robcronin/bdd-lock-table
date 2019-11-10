@@ -4,6 +4,16 @@ provider:
   name: aws
   runtime: python3.7
   region: eu-west-2
+  environment:
+    BDD_LOCK_TABLE_NAME: bddLockTable-${opt:stackName, 'dev'}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+      Resource:
+        - "Fn::GetAtt": [bddLockTable, Arn]
 
 functions:
   create-stack:
@@ -11,14 +21,14 @@ functions:
     events:
       - http:
           method: POST
-          path: create
+          path: create-stack
 
 resources:
     Resources:
       bddLockTable: 
         Type: AWS::DynamoDB::Table
         Properties:
-          TableName: bddLockTable-${opt:stackName, 'dev'}
+          TableName: ${self:provider.environment.BDD_LOCK_TABLE_NAME}
           AttributeDefinitions:
             - AttributeName: stackName
               AttributeType: S
