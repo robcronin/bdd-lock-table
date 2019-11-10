@@ -37,6 +37,12 @@ functions:
       - http:
           method: POST
           path: get-available
+  claim-stack:
+    handler: src/claim_stack.claim
+    events:
+      - http:
+          method: POST
+          path: claim-stack
 
 resources:
     Resources:
