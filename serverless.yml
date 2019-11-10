@@ -43,6 +43,12 @@ functions:
       - http:
           method: POST
           path: claim-stack
+  release-stack:
+    handler: src/claim_stack.release
+    events:
+      - http:
+          method: POST
+          path: release-stack
 
 resources:
     Resources:
