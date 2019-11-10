@@ -1,0 +1,14 @@
+service: bdd-lock-table
+
+provider:
+  name: aws
+  runtime: python3.7
+  region: eu-west-2
+
+functions:
+  create-stack:
+    handler: src/create_stack.create
+    events:
+      - http:
+          method: POST
+          path: create

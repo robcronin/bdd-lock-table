@@ -1,0 +1,8 @@
+{
+  "name": "bdd-lock-table",
+  "version": "1.0.0",
+  "license": "MIT",
+  "devDependencies": {
+    "serverless": "^1.57.0"
+  }
+}
