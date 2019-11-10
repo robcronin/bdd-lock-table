@@ -14,6 +14,15 @@ provider:
         - dynamodb:UpdateItem
       Resource:
         - "Fn::GetAtt": [bddLockTable, Arn]
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+      Resource:
+        - !Join
+          - "/"
+          - - "Fn::GetAtt": [bddLockTable, Arn]
+            - "index"
+            - "*"
 
 functions:
   create-stack:
@@ -22,6 +31,12 @@ functions:
       - http:
           method: POST
           path: create-stack
+  get-available:
+    handler: src/get_available.query
+    events:
+      - http:
+          method: POST
+          path: get-available
 
 resources:
     Resources:
