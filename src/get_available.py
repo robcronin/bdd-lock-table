@@ -7,9 +7,7 @@ from boto3.dynamodb.conditions import Key
 
 
 def query(event, context):
-    event_body = json.loads(event["body"])
-
-    repo_name = event_body["repoName"]
+    repo_name = event.get("pathParameters").get("repoName")
 
     bdd_lock_table = os.environ["BDD_LOCK_TABLE_NAME"]
     dynamodb = boto3.resource("dynamodb")

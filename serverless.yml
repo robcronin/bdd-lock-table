@@ -35,20 +35,20 @@ functions:
     handler: src/get_available.query
     events:
       - http:
-          method: POST
-          path: get-available
+          method: GET
+          path: get-available/{repoName}
   claim-stack:
     handler: src/claim_stack.claim
     events:
       - http:
-          method: POST
-          path: claim-stack
+          method: PUT
+          path: claim-stack/{stackName}
   release-stack:
     handler: src/claim_stack.release
     events:
       - http:
-          method: POST
-          path: release-stack
+          method: PUT
+          path: release-stack/{stackName}
 
 resources:
     Resources:

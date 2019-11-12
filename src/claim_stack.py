@@ -33,17 +33,10 @@ def transact_write(stack_name, update_type):
 
 
 def claim(event, context):
-    event_body = json.loads(event["body"])
-
-    stack_name = event_body["stackName"]
-
+    stack_name = event.get("pathParameters").get("stackName")
     return transact_write(stack_name, "claim")
 
 
 def release(event, context):
-    event_body = json.loads(event["body"])
-
-    stack_name = event_body["stackName"]
-
+    stack_name = event.get("pathParameters").get("stackName")
     return transact_write(stack_name, "release")
-
