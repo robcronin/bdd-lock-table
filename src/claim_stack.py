@@ -19,7 +19,9 @@ def transact_write(stack_name, update_type):
         update_body["ConditionExpression"] = "isAvailable = :x"
         update_body["UpdateExpression"] = "remove isAvailable"
     elif update_type == "release":
-        update_body["ConditionExpression"] = "attribute_not_exists(isAvailable) AND attribute_exists(stackName)"
+        update_body[
+            "ConditionExpression"
+        ] = "attribute_not_exists(isAvailable) AND attribute_exists(stackName)"
         update_body["UpdateExpression"] = "set isAvailable = :x"
 
     try:

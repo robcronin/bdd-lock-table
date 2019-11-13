@@ -5,7 +5,6 @@ from src.response import make_response
 from boto3.dynamodb.conditions import Key
 
 
-
 def query(event, context):
     repo_name = event.get("pathParameters").get("repoName")
 

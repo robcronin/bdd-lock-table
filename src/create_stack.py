@@ -10,12 +10,10 @@ def create(event, context):
         "stackName": {"S": event_body["stackName"]},
         "repoName": {"S": event_body["repoName"]},
     }
-    if(event_body["isAvailable"]):
+    if event_body["isAvailable"]:
         new_stack["isAvailable"] = {"S": "x"}
 
-
-
-    client = boto3.client('dynamodb')
+    client = boto3.client("dynamodb")
     bdd_lock_table = os.environ["BDD_LOCK_TABLE_NAME"]
     try:
         client.put_item(
