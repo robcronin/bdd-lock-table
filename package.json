@@ -2,6 +2,10 @@
   "name": "bdd-lock-table",
   "version": "1.0.0",
   "license": "MIT",
+  "scripts": {
+    "deploy": "yarn sls deploy",
+    "lint": "pipenv run black ./src"
+  },
   "devDependencies": {
     "serverless": "^1.57.0"
   }
