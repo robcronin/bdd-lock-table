@@ -25,13 +25,11 @@ def transact_write(stack_name, update_type):
         update_body["UpdateExpression"] = "set isAvailable = :x"
 
     try:
-        response = client.transact_write_items(TransactItems=[{"Update": update_body}])
+        client.transact_write_items(TransactItems=[{"Update": update_body}])
     except client.exceptions.TransactionCanceledException:
         return make_response({"error": "Transaction Cancelled"}, 400)
 
-    return make_response(
-        {"info": f"Successfully {update_type}ed stack", "response": response}
-    )
+    return make_response({"info": f"Successfully {update_type}ed stack"})
 
 
 def claim(event, context):

@@ -64,9 +64,6 @@ A lock table to claim exitsing stacks when running BDD tests to reduce CI runtim
     ```json
     {
         "info": "Successfully claimed stack",
-        "response": {
-            ...
-        }
     }
     ```
 - `/release-stack`
@@ -74,9 +71,6 @@ A lock table to claim exitsing stacks when running BDD tests to reduce CI runtim
     ```json
     {
         "info": "Successfully releaseed stack",
-        "response": {
-            ...
-        }
     }
     ```
 - `/create-stack`
