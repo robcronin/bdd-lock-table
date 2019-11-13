@@ -1,4 +1,5 @@
 import boto3
+import datetime
 import json
 import os
 from src.response import make_response
@@ -9,6 +10,7 @@ def create(event, context):
     new_stack = {
         "stackName": {"S": event_body["stackName"]},
         "repoName": {"S": event_body["repoName"]},
+        "lastUsed": {"S": datetime.datetime.now().isoformat()}
     }
     if event_body["isAvailable"]:
         new_stack["isAvailable"] = {"S": "x"}

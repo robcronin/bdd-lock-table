@@ -1,4 +1,5 @@
 import boto3
+import datetime
 import json
 import os
 from src.response import make_response
@@ -12,17 +13,17 @@ def transact_write(stack_name, update_type):
     update_body = {
         "TableName": bdd_lock_table,
         "Key": {"stackName": {"S": stack_name}},
-        "ExpressionAttributeValues": {":x": {"S": "x"},},
+        "ExpressionAttributeValues": {":x": {"S": "x"},":datetime": {"S": datetime.datetime.now().isoformat()}},
     }
 
     if update_type == "claim":
         update_body["ConditionExpression"] = "isAvailable = :x"
-        update_body["UpdateExpression"] = "remove isAvailable"
+        update_body["UpdateExpression"] = "remove isAvailable set lastUsed = :datetime"
     elif update_type == "release":
         update_body[
             "ConditionExpression"
         ] = "attribute_not_exists(isAvailable) AND attribute_exists(stackName)"
-        update_body["UpdateExpression"] = "set isAvailable = :x"
+        update_body["UpdateExpression"] = "set isAvailable = :x, lastUsed = :datetime"
 
     try:
         client.transact_write_items(TransactItems=[{"Update": update_body}])
