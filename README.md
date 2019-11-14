@@ -60,14 +60,14 @@ A lock table to claim exitsing stacks when running BDD tests to reduce CI runtim
     }
     ```
 - `/claim-stack`
-    - `PUT` to `{SERVICE_ENDPOINT}/claim-stack/{STACK_NAME} returns
+    - `PUT` to `{SERVICE_ENDPOINT}/claim-stack/{STACK_NAME}` returns
     ```json
     {
         "info": "Successfully claimed stack",
     }
     ```
 - `/release-stack`
-    - `PUT` to `{SERVICE_ENDPOINT}/release-stack/{STACK_NAME} returns
+    - `PUT` to `{SERVICE_ENDPOINT}/release-stack/{STACK_NAME}` returns
     ```json
     {
         "info": "Successfully releaseed stack",
