@@ -13,7 +13,10 @@ def transact_write(stack_name, update_type):
     update_body = {
         "TableName": bdd_lock_table,
         "Key": {"stackName": {"S": stack_name}},
-        "ExpressionAttributeValues": {":x": {"S": "x"},":datetime": {"S": datetime.datetime.now().isoformat()}},
+        "ExpressionAttributeValues": {
+            ":x": {"S": "x"},
+            ":datetime": {"S": datetime.datetime.now().isoformat()},
+        },
     }
 
     if update_type == "claim":
