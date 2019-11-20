@@ -4,87 +4,60 @@ A lock table to claim exitsing stacks when running BDD tests to reduce CI runtim
 
 ## Motivation
 
-- Running BDD tests on a microservice tends to require a standalone stack before you make and create dummy data
+- Running BDD tests on a microservice often requires creating a standalone stack before you can create and delete dummy data
 - Creating brand new stacks for each new build adds a large overhead to your CI runtime (especially with custom domains)
-- Updating stakcs is significantly faster
-- Instead have some stacks ready to go that any CI job can claim, update with their code, run tests and then release back
+- Updating stacks is significantly faster
+
+Instead you can have some stacks which are ready to go that any CI job can claim, update with their code, run tests and then release back
 
 ## How it works
 
 - There is a dynamoDB table like so:
 
-| stackName     | repoName          | isAvailable   |
-| -             | -                 | -             |
-| testStack2192 | paymentService    | x             |
-| testStack3244 | paymentService    | x             |
-| testStack1295 | emailService      |               |
-| testStack9521 | paymentService    |               |
-| testStack1295 | emailService      | x             |
+| stackName     | repoName          | isAvailable   | lastUsed              |
+| -             | -                 | -             | -                     |
+| testStack2192 | paymentService    | x             | 2019-11-20T23:10:28   |
+| testStack3244 | paymentService    | x             | 2019-11-19T12:31:43   |
+| testStack1295 | emailService      |               | 2019-11-20T14:12:11   |
+| testStack9521 | paymentService    |               | 2019-11-20T23:09:49   |
+| testStack1295 | emailService      | x             | 2019-11-20T19:54:08   |
 
-- When your CI runs and wants to create a stack it checks if there are any available stacks for its repo (`/get-available`)
+- When your CI runs and needs a stack, it checks if there are any available stacks for its repo (`/get-available`)
 - If there is:
-    - It claims a stack (`/claim-stack`)and marks it as not available (using a transact write to ensure only one job can claim a stack at a time)
+    - It claims a stack (`/claim-stack`) and marks it as not available (using a transact write to ensure only one job can claim a stack at a time)
     - It then updates the stack with its code and runs its tests
     - After (success or fail) it marks the stack as available again (`/release-stack`)
 - If not:
     - It creates a new entry in the table with a random stack name (`/create-stack`)
     - It creates a new stack with this name and runs its tests
     - After (success or fail) it marks the stack as available again (`/release-stack`)
-- After your CI has run for a while you should have enough stacks created that any new job can always claim an existing stack
-
-## Deploying
-
-- `yarn`
-- `pipenv install`
-- `yarn sls deploy --stackName {YOUR_STACK_NAME}`
+- After your CI has a number of times, you should have enough stacks created that any new job can always claim an existing stack
 
 ## Endpoints
 
-- `/get-available`
-    - `GET` to `{SERVICE_ENDPOINT}/get-available/{REPO_NAME}` returns
-    ```json
-    {
-        "info": "Successfully queried",
-        "results": [
-            {
-                "repoName": "sls-bdd",
-                "stackName": "testStack94392",
-                "isAvailable": "x"
-            },
-            {
-                "repoName": "sls-bdd",
-                "stackName": "testStack12143",
-                "isAvailable": "x"
-            }
-        ]
-    }
-    ```
-- `/claim-stack`
-    - `PUT` to `{SERVICE_ENDPOINT}/claim-stack/{STACK_NAME}` returns
-    ```json
-    {
-        "info": "Successfully claimed stack",
-    }
-    ```
-- `/release-stack`
-    - `PUT` to `{SERVICE_ENDPOINT}/release-stack/{STACK_NAME}` returns
-    ```json
-    {
-        "info": "Successfully releaseed stack",
-    }
-    ```
-- `/create-stack`
-    - `POST` to `{SERVICE_ENDPOINT}/create-stack` with
-    ```json
-    {
-        "stackName": "testStack19038",
-        "repoName": "sls-bdd",
-        "isAvailable": true
-    }
-    ```
-    returns
-    ```json
-    {
-        "info": "Successfully created stack entry"
-    }
-    ```
+- See the [schema](./docs/schema.md)
+- Or import the [Postman Collection](./bdd-lock-table.postman_collection.json)
+    - Set variables for `bddStack` and `token`
+
+## <a id="deploy"></a>Deploying
+
+- Create a SecureString parameter in your AWS parameter store called `bddLockTableAuthToken`
+    - This should be a generated string
+- `pipenv install`
+- `yarn`
+- `yarn sls deploy --stackName {YOUR_STACK_NAME}`
+
+## Setting up on CircleCI
+
+Example repo coming soon, for now see the CircleCI example in the [ci-examples](./ci-examples) directory
+
+- [Deploy](#deploy) a version of this repo
+- Save the following variables in your CI environment
+    - `BDD_LOCK_ENDPOINT`: The root of your deployed endpoints e.g. `https://xxxxxxxxxx.execute-api.eu-west-2.amazonaws.com/dev`
+    - `BDD_LOCK_AUTH_TOKEN`: The password you generated and stored in ssm
+    - `REPO_NAME`: your repo name
+- Set up your ci config to use the relevant endpoints to claim a stack or create a new one if none available
+    - Consider using a loop to try again if it tries to claim a stack at the same time as another job
+- Run your tests against your stack but don't fail the build straight away if they fail
+- Release your stack on sucess or failure
+- Finish your build with success or failure

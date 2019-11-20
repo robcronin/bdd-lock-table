@@ -1,0 +1,18 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.7.4-node
+    working_directory: ~/python
+    steps:
+      - checkout
+      - run:
+          name: install dependencies
+          command: |
+            yarn
+            pipenv install --dev
+      - run:
+          name: Run BDD tests
+          command: |
+            chmod +x ci-bdd.sh
+            ./ci-bdd.sh
