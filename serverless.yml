@@ -25,30 +25,38 @@ provider:
             - "*"
 
 functions:
+  authorizer:
+    handler: src/authentication.authorize
+    environment: 
+      BDD_LOCK_TABLE_AUTH_TOKEN: ${ssm:bddLockTableAuthToken~true}
   create-stack:
     handler: src/create_stack.create
     events:
       - http:
           method: POST
           path: create-stack
+          authorizer: authorizer
   get-available:
     handler: src/get_available.query
     events:
       - http:
           method: GET
           path: get-available/{repoName}
+          authorizer: authorizer
   claim-stack:
     handler: src/claim_stack.claim
     events:
       - http:
           method: PUT
           path: claim-stack/{stackName}
+          authorizer: authorizer
   release-stack:
     handler: src/claim_stack.release
     events:
       - http:
           method: PUT
           path: release-stack/{stackName}
+          authorizer: authorizer
 
 resources:
     Resources:
