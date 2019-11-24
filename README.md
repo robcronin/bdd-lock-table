@@ -65,3 +65,10 @@ Or see the CircleCI example in the [ci-examples](./ci-examples) directory of thi
 - Run your tests against your stack but don't fail the build straight away if they fail
 - Release your stack on sucess or failure
 - Finish your build with success or failure
+
+## Further Ideas
+
+- Don't release a stack that fails so that the developer can debug on the stack
+    - Schedule the stack to be released after x time
+- Schedule removal of stacks that haven't been used in x time
+- Allow update of all existing stacks to a master branch in case of a big change(adding a dynamoDB index for example)
