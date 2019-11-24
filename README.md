@@ -1,6 +1,8 @@
-# BDD Lock Table
+<div align="center">
+    <img width="400px" src="./logo.png" align="center" alt="BDD Lock Logo">
+    <h3>A lock table to claim existing stacks when running BDD tests to reduce CI runtime</h3>
+</div>
 
-A lock table to claim exitsing stacks when running BDD tests to reduce CI runtime
 
 ## Motivation
 
@@ -49,7 +51,9 @@ Instead you can have some stacks which are ready to go that any CI job can claim
 
 ## Setting up on CircleCI
 
-Example repo coming soon, for now see the CircleCI example in the [ci-examples](./ci-examples) directory
+See an [Example repo](https://github.com/robcronin/sls-bdd-python-optimised-ci) with some simple tests
+
+Or see the CircleCI example in the [ci-examples](./ci-examples) directory of this repo
 
 - [Deploy](#deploy) a version of this repo
 - Save the following variables in your CI environment
