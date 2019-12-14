@@ -33,7 +33,9 @@ Instead you can have some stacks which are ready to go that any CI job can claim
     - It creates a new entry in the table with a random stack name (`/create-stack`)
     - It creates a new stack with this name and runs its tests
     - After (success or fail) it marks the stack as available again (`/release-stack`)
-- After your CI has a number of times, you should have enough stacks created that any new job can always claim an existing stack
+- After your CI has run a number of times, you should have enough stacks created that any new job can always claim an existing stack
+- Note: there is also a scheduled `release-unused` lambda which runs at 1am every weekday to release any stack that has been claimed for more than 2 hours
+  - This is to clean up from any jobs that exit from your CI before releasing the stack
 
 ## Endpoints
 
@@ -70,5 +72,5 @@ Or see the CircleCI example in the [ci-examples](./ci-examples) directory of thi
 
 - Don't release a stack that fails so that the developer can debug on the stack
     - Schedule the stack to be released after x time
-- Schedule removal of stacks that haven't been used in x time
+- ~~Schedule removal of stacks that haven't been used in x time~~
 - Allow update of all existing stacks to a master branch in case of a big change(adding a dynamoDB index for example)
