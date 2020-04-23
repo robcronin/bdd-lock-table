@@ -7,6 +7,6 @@
     "lint": "pipenv run black ./src"
   },
   "devDependencies": {
-    "serverless": "^1.67.3"
+    "serverless": "^1.68.0"
   }
 }
